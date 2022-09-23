@@ -14,7 +14,7 @@ def annealing(numbers, target):
     # Binary vector: 1 = corresponding number is in partition
     s = get_initial_solution(numbers, target) 
     t = 1
-    epsilon = 0.01
+    epsilon = 0.00000001
     learning_rate = 0.9
     while t > epsilon:
         if partition_sum(s, numbers) == target:
@@ -43,13 +43,13 @@ def get_initial_solution(numbers, target):
     num_in_partition = target / expected_size_of_one
     # Set that many places to one
     while sum(solution) < num_in_partition:
-        random_index = random.randint(len(solution))
+        random_index = random.randint(0, len(solution) - 1)
         solution[random_index] = 1
     return solution
 
 def find_neighbor(s):
     neighbor = s.copy()
-    random_index = random.randint(len(neighbor))
+    random_index = random.randint(0, len(neighbor) - 1)
     neighbor[random_index] = 1 - neighbor[random_index]
     return neighbor
 
@@ -57,7 +57,7 @@ def partition_sum(s, numbers):
     # TODO: Just a dot product, so use numpy.
     total = 0
     for k in range(len(numbers)):
-        total += s*numbers
+        total += s[k]*numbers[k]
     return total
 
 def scaled_distance_from_target(s, numbers, target):
@@ -69,4 +69,4 @@ def distance_from_target(s, numbers, target):
     return np.abs(total - target)
 
 
-annealing()
+annealing(numbers, target)
