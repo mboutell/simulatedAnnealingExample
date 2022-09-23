@@ -20,8 +20,17 @@ def annealing(numbers, target):
         if partition_sum(s, numbers) == target:
             break
         s_nbr = find_neighbor(s)
-        
-
+        e = scaled_distance_from_target(s, numbers, target)
+        e_nbr = scaled_distance_from_target(s_nbr, numbers, target)
+        # We are minimiizing the distance from the target.
+        # If delta_e > 0, e(delta_e) > 1, so we always accept.
+        # We want to accept the neighbor if it is smaller.
+        # To make delta_e > 0 when s_neighbor < s, we take e - e_nbr
+        delta_e = e - e_nbr 
+        rand = random.random()
+        if rand < np.exp(delta_e / t):
+            s = s_nbr
+            print("new best has sum", partition_sum(s, numbers))
         t *= learning_rate
     
     print("found best solution with sum", partition_sum(s, numbers))
@@ -50,5 +59,14 @@ def partition_sum(s, numbers):
     for k in range(len(numbers)):
         total += s*numbers
     return total
+
+def scaled_distance_from_target(s, numbers, target):
+    distance = distance_from_target(s, numbers, target)
+    return 10*(distance / target - 1)
+
+def distance_from_target(s, numbers, target):
+    total = partition_sum(s, numbers)
+    return np.abs(total - target)
+
 
 annealing()
