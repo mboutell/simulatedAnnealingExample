@@ -15,7 +15,7 @@ def annealing(numbers, target):
     s = get_initial_solution(numbers, target) 
     t = 1
     epsilon = 0.00000001
-    learning_rate = 0.9
+    learning_rate = 0.99
     while t > epsilon:
         if partition_sum(s, numbers) == target:
             break
