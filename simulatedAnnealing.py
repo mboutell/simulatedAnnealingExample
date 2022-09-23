@@ -1,6 +1,12 @@
 # Matt Boutell
-# Attempt to solve the partition problem, approximately, using simulated 
-# annealing.
+# Get an approximate solution to the Partition problem using simulated 
+# annealing (see the anneal function).
+#  
+# Software Design side note: This code abstracts away some of the details of the Partition problem into a Partition class.
+# It's not 100% there: for example, all Problems are assumed to have a distance from target, and that may not be true
+# for all problems.
+# If this were production code, we'd define the abstraction more cleanly, and define an abstract Problem class that classes like 
+# Partition would need to extend. 
 
 
 from operator import truediv
@@ -11,8 +17,7 @@ numbers = [14175, 15055, 16616, 17495, 18072, 19390, 19731, 22161, 23320, 23717,
 numbers = np.array(numbers)
 target = 1000000
 
-def annealing(numbers, target):
-    problem = Partition(numbers, target)
+def anneal(problem):
     s = problem.get_initial_solution()
     t = 1
     epsilon = 0.00000001
@@ -23,7 +28,7 @@ def annealing(numbers, target):
         s_nbr = problem.find_neighbor(s)
         e = problem.scaled_distance_from_target(s)
         e_nbr = problem.scaled_distance_from_target(s_nbr)
-        # We are minimiizing the distance from the target.
+        # We are minimizing the distance from the target.
         # If delta_e > 0, e(delta_e) > 1, so we always accept.
         # We want to accept the neighbor if it is smaller.
         # To make delta_e > 0 when s_neighbor < s, we take e - e_nbr
@@ -79,4 +84,5 @@ class Partition():
     def is_exact(self, s):
         return self.partition_sum(s) == target
 
-annealing(numbers, target)
+problem = Partition(numbers, target)
+anneal(problem)
